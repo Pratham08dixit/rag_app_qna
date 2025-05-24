@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+python-multipart
+jinja2
+python-dotenv
+sqlalchemy
+PyMuPDF
+python-docx
+langchain
+langchain-community
+langchain-google-genai
+google-generativeai
+faiss-cpu
+itsdangerous

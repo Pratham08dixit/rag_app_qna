@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>RAG App — Document Q&A</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-white shadow p-6">
+    <h1 class="text-3xl font-bold text-center text-indigo-600">RAG App</h1>
+  </header>
+
+  <div class="flex flex-1 max-w-6xl mx-auto mt-8 gap-6">
+
+    <!-- Sidebar -->
+    <aside class="w-1/4 bg-white p-4 shadow rounded-lg">
+      <!-- Uploaded Files -->
+      <section>
+        <h2 class="text-lg font-semibold mb-2">Uploaded Files</h2>
+        <ul id="file-list" class="space-y-1 text-sm text-gray-700 max-h-64 overflow-y-auto">
+          <!-- Populated dynamically -->
+        </ul>
+      </section>
+    </aside>
+
+    <!-- Main area -->
+    <main class="flex-1 space-y-6">
+
+      <!-- File Upload -->
+      <div class="bg-white p-6 shadow rounded-lg">
+        <h2 class="font-semibold mb-2">Upload Documents</h2>
+        <input type="file" id="file-input" multiple class="border p-2 rounded w-full"/>
+        <button
+          onclick="uploadFiles()"
+          class="mt-2 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+        >
+          Upload
+        </button>
+        <p id="upload-status" class="mt-2 text-sm text-yellow-700"></p>
+      </div>
+
+      <!-- Ask Question -->
+      <div class="bg-white p-6 shadow rounded-lg">
+        <h2 class="font-semibold mb-2">Ask a Question</h2>
+        <input
+          type="text"
+          id="question-input"
+          placeholder="Type your question…"
+          class="border p-2 rounded w-full"
+        />
+        <button
+          onclick="askQuestion()"
+          class="mt-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+        >
+          Get Answer
+        </button>
+        <div id="answer-box" class="mt-4 hidden bg-green-50 border-l-4 border-green-400 p-4 text-green-700 rounded">
+          <strong>Answer:</strong>
+          <p id="answer-text" class="mt-1"></p>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // Load list of uploaded documents
+    async function loadDocuments() {
+      const list = document.getElementById('file-list')
+      list.innerHTML = ''
+      try {
+        const res = await fetch('/api/metadata')
+        const docs = await res.json()
+        docs.forEach(d => {
+          const li = document.createElement('li')
+          li.textContent = d.filename
+          list.appendChild(li)
+        })
+      } catch (err) {
+        list.innerHTML = '<li class="text-red-500">Error loading files.</li>'
+      }
+    }
+
+    // Upload selected files
+    async function uploadFiles() {
+      const input = document.getElementById('file-input')
+      const status = document.getElementById('upload-status')
+      if (!input.files.length) {
+        status.textContent = 'Please select at least one file.'
+        return
+      }
+      const form = new FormData()
+      for (let f of input.files) form.append('files', f)
+      status.textContent = 'Uploading…'
+      try {
+        const res = await fetch('/api/upload', { method: 'POST', body: form })
+        const data = await res.json()
+        if (res.ok) {
+          status.textContent = 'Upload successful.'
+          input.value = ''
+          loadDocuments()
+        } else {
+          status.textContent = data.detail || 'Upload failed.'
+        }
+      } catch (err) {
+        status.textContent = 'Upload error.'
+      }
+    }
+
+    // Ask the LLM a question
+    async function askQuestion() {
+      const qin = document.getElementById('question-input')
+      const ansBox = document.getElementById('answer-box')
+      const ansText = document.getElementById('answer-text')
+
+      const question = qin.value.trim()
+      if (!question) return
+
+      try {
+        const res = await fetch('/api/query', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question })
+        })
+        const { answer } = await res.json()
+
+        // Display answer
+        ansText.textContent = answer
+        ansBox.classList.remove('hidden')
+
+        qin.value = ''
+      } catch (err) {
+        alert('Error getting answer.')
+      }
+    }
+
+    // Initial load
+    window.addEventListener('DOMContentLoaded', () => {
+      loadDocuments()
+    })
+  </script>
+
+</body>
+</html>
