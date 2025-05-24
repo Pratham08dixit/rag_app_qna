@@ -27,7 +27,7 @@ def on_startup():
 
 templates = Jinja2Templates(directory="templates")
 
-# Mount routers
+# Mount 
 app.include_router(upload_router, prefix="/api", tags=["upload"])
 app.include_router(query_router,  prefix="/api", tags=["query"])
 app.include_router(meta_router,   prefix="/api", tags=["metadata"])
