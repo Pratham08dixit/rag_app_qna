@@ -1,0 +1,303 @@
+{
+  "info": {
+    "name": "RAG Application API",
+    "description": "Complete API collection for testing the RAG Document Q&A system",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Document Management",
+      "item": [
+        {
+          "name": "Upload Documents",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "files",
+                  "type": "file",
+                  "src": [],
+                  "description": "Select one or more documents (PDF, TXT, DOC, DOCX)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/upload",
+              "host": ["{{base_url}}"],
+              "path": ["api", "upload"]
+            },
+            "description": "Upload documents to the RAG system. Supports PDF, TXT, DOC, and DOCX files. Maximum 20 files per session, 10MB per file, 1000 pages per document."
+          },
+          "response": [
+            {
+              "name": "Successful Upload",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "files",
+                      "type": "file",
+                      "src": "sample.pdf"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/upload",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "upload"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"uploaded\",\n  \"uploaded_files\": [\"sample.pdf\"]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Document Metadata",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/metadata",
+              "host": ["{{base_url}}"],
+              "path": ["api", "metadata"]
+            },
+            "description": "Retrieve metadata for all uploaded documents in the current session."
+          },
+          "response": [
+            {
+              "name": "Document List",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/metadata",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "metadata"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 1,\n    \"filename\": \"sample.pdf\",\n    \"upload_time\": \"2024-01-01T12:00:00\",\n    \"num_chunks\": 25\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Delete Document",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/metadata/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "metadata", "1"]
+            },
+            "description": "Delete a specific document by its ID. This will remove the document from storage and rebuild the vector index."
+          },
+          "response": [
+            {
+              "name": "Document Deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/metadata/1",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "metadata", "1"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"removed\",\n  \"filename\": \"sample.pdf\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Query System",
+      "item": [
+        {
+          "name": "Ask Question",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"What is the main topic discussed in the documents?\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/query",
+              "host": ["{{base_url}}"],
+              "path": ["api", "query"]
+            },
+            "description": "Ask a question based on the uploaded documents. The system will retrieve relevant content and generate a contextual response using the LLM."
+          },
+          "response": [
+            {
+              "name": "Successful Query",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"question\": \"What is the main topic discussed in the documents?\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/query",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "query"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"answer\": \"Based on the uploaded documents, the main topic is...\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Complex Query Example",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"Can you summarize the key findings and provide specific examples mentioned in the documents?\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/query",
+              "host": ["{{base_url}}"],
+              "path": ["api", "query"]
+            },
+            "description": "Example of a more complex query that requires the system to analyze and synthesize information from multiple document chunks."
+          }
+        },
+        {
+          "name": "Factual Query Example",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"What are the specific dates, numbers, or statistics mentioned in the documents?\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/query",
+              "host": ["{{base_url}}"],
+              "path": ["api", "query"]
+            },
+            "description": "Example query for extracting specific factual information from the documents."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Application Health",
+      "item": [
+        {
+          "name": "API Documentation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/docs",
+              "host": ["{{base_url}}"],
+              "path": ["docs"]
+            },
+            "description": "Access the interactive API documentation (Swagger UI)."
+          }
+        },
+        {
+          "name": "Home Page",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            },
+            "description": "Access the web interface for document upload and querying."
+          }
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Set base URL if not already set",
+          "if (!pm.variables.get('base_url')) {",
+          "    pm.variables.set('base_url', 'http://localhost:8000');",
+          "}"
+        ]
+      }
+    }
+  ]
+}

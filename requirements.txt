@@ -1,14 +1,76 @@
-fastapi
-uvicorn[standard]
-python-multipart
-jinja2
-python-dotenv
-sqlalchemy
-PyMuPDF
-python-docx
-langchain
-langchain-community
-langchain-google-genai
-google-generativeai
-faiss-cpu
-itsdangerous
+# Core Framework
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6
+jinja2>=3.1.2
+python-dotenv>=1.0.0
+
+# Database
+sqlalchemy>=2.0.0
+alembic>=1.12.0
+
+# Document Processing
+PyMuPDF>=1.23.0
+python-docx>=1.1.0
+PyPDF2>=3.0.0
+
+# LangChain and LLM Providers
+langchain>=0.1.0
+langchain-community>=0.0.10
+langchain-google-genai>=1.0.0
+langchain-openai>=0.0.5
+langchain-anthropic>=0.1.0
+
+# LLM Provider SDKs
+google-generativeai>=0.3.0
+openai>=1.0.0
+anthropic>=0.8.0
+
+# Vector Stores
+faiss-cpu>=1.7.4
+pinecone-client>=2.2.4
+weaviate-client>=3.25.0
+chromadb>=0.4.0
+
+# Caching and Performance
+redis>=5.0.0
+memcached>=1.59
+
+# Security and Sessions
+itsdangerous>=2.1.2
+cryptography>=41.0.0
+
+# Monitoring and Logging
+prometheus-client>=0.19.0
+structlog>=23.2.0
+sentry-sdk[fastapi]>=1.38.0
+
+# Testing (for development)
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+pytest-xdist>=3.3.0
+pytest-mock>=3.12.0
+httpx>=0.25.0
+
+# Development Tools
+black>=23.0.0
+isort>=5.12.0
+flake8>=6.1.0
+mypy>=1.7.0
+bandit>=1.7.5
+safety>=2.3.0
+
+# Optional: Additional Vector Stores
+# elasticsearch>=8.11.0
+# qdrant-client>=1.6.0
+
+# Optional: Additional LLM Providers
+# cohere>=4.37.0
+# huggingface-hub>=0.19.0
+# transformers>=4.35.0
+
+# Optional: Cloud Storage
+# boto3>=1.34.0  # AWS S3
+# google-cloud-storage>=2.10.0  # Google Cloud Storage
+# azure-storage-blob>=12.19.0  # Azure Blob Storage
