@@ -212,34 +212,6 @@ VECTOR_DIMENSION=1536
 SIMILARITY_THRESHOLD=0.7
 MAX_RETRIEVAL_RESULTS=5
 
-# =============================================================================
-# PERFORMANCE & CACHING
-# =============================================================================
-
-# Caching
-ENABLE_CACHING=true
-CACHE_TTL_SECONDS=3600
-CACHE_TYPE=memory  # memory, redis
-REDIS_URL=redis://localhost:6379/0
-
-# Rate Limiting
-RATE_LIMIT_ENABLED=true
-RATE_LIMIT_REQUESTS_PER_MINUTE=60
-RATE_LIMIT_BURST=10
-
-# =============================================================================
-# MONITORING & LOGGING
-# =============================================================================
-
-# Logging
-LOG_LEVEL=INFO  # DEBUG, INFO, WARNING, ERROR, CRITICAL
-LOG_FORMAT=json  # json, text
-LOG_FILE=logs/app.log
-
-
-#### Provider Fallback Chain
-
-
 ## File Format Support
 
 | Format | Extension | Max Pages | Notes |
@@ -359,14 +331,6 @@ def test_llm_provider_fallback(client):
     # Verify response quality
 ```
 
-### Performance Benchmarks
-
-| Metric | Target | Measurement |
-|--------|--------|--------------|
-| **Upload Time** | <30s for 10 files | Average processing time |
-| **Query Response** | <5s average | 95th percentile response time |
-| **Concurrent Users** | 50+ simultaneous | Load testing results |
-| **Memory Usage** | <2GB for 100 docs | Peak memory consumption |
 
 
 
